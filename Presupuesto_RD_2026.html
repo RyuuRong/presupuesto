@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presupuesto Personal RD 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#f0f2f5;--card:#fff;--border:#e0e0e0;--text:#1a1a2e;--muted:#6b7280;
+  --accent:#1F4E79;--accent2:#2563EB;
+  --qik:#4527A0;--qik-l:#EDE7F6;
+  --pop:#B71C1C;--pop-l:#FFEBEE;
+  --green:#2E7D32;--green-l:#E8F5E9;
+  --yellow:#F57F17;--yellow-l:#FFFDE7;
+  --danger:#C62828;--danger-l:#FFEBEE;
+  --tss:#0277BD;--tss-l:#E1F5FE;
+  --isr:#6A1B9A;--isr-l:#F3E5F5;
+  --otros:#00695C;--otros-l:#E0F2F1;
+}
+.botros{background:var(--otros);color:#fff;border-color:var(--otros);}
+.botros:hover{background:#004D40;}
+.botros-l{background:var(--otros-l);color:var(--otros);}
+.cat-pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;background:#f0f0f0;color:var(--muted);}
+.cat-Alquiler{background:#FFF3E0;color:#E65100;}
+.cat-Préstamos{background:#FCE4EC;color:#880E4F;}
+.cat-Gasolina{background:#FFF9C4;color:#827717;}
+.cat-Electricidad{background:#E8EAF6;color:#283593;}
+.cat-Internet{background:#E0F7FA;color:#006064;}
+.cat-Agua{background:#E1F5FE;color:#01579B;}
+.cat-Teléfono{background:#F3E5F5;color:#4A148C;}
+.cat-Seguro{background:#E8F5E9;color:#1B5E20;}
+.cat-Comida{background:#FBE9E7;color:#BF360C;}
+.cat-Transporte{background:#FFFDE7;color:#F57F17;}
+.cat-Educación{background:#EDE7F6;color:#4527A0;}
+.cat-Salud{background:#E0F2F1;color:#004D40;}
+.cat-Entretenimiento{background:#FCE4EC;color:#880E4F;}
+.cat-Otros{background:#F5F5F5;color:#424242;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+/* NAV */
+.nav{background:var(--accent);color:#fff;padding:0 24px;display:flex;align-items:stretch;}
+.nav-brand{padding:14px 0;margin-right:24px;}
+.nav-brand h1{font-size:16px;font-weight:700;}
+.nav-brand .sub{font-size:11px;opacity:.75;margin-top:1px;}
+.nav-tabs{display:flex;gap:0;}
+.ntab{padding:14px 20px;cursor:pointer;font-size:13px;font-weight:600;opacity:.7;border-bottom:3px solid transparent;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;color:#fff;}
+.ntab:hover{opacity:1;background:rgba(255,255,255,.1);}
+.ntab.active{opacity:1;border-bottom-color:#fff;}
+
+/* LAYOUT */
+.main{max-width:1100px;margin:0 auto;padding:18px;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* CARDS */
+.card{background:#fff;border-radius:10px;border:1px solid var(--border);margin-bottom:14px;overflow:hidden;}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+.card-title{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+.badge{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:700;}
+.bqik{background:var(--qik-l);color:var(--qik);}
+.bpop{background:var(--pop-l);color:var(--pop);}
+.btss{background:var(--tss-l);color:var(--tss);}
+.bisr{background:var(--isr-l);color:var(--isr);}
+.bgrn{background:var(--green-l);color:var(--green);}
+
+/* BUTTONS */
+.btn{padding:7px 15px;border-radius:7px;border:1px solid var(--border);background:#fff;font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;transition:all .12s;}
+.btn:hover{background:#f0f0f0;}
+.btn-acc{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-acc:hover{background:#163d61;}
+.btn-qik{background:var(--qik);color:#fff;border-color:var(--qik);}
+.btn-grn{background:var(--green);color:#fff;border-color:var(--green);}
+.btn-isr{background:var(--isr);color:#fff;border-color:var(--isr);}
+.btn-sm{padding:4px 10px;font-size:12px;}
+
+/* FORMS */
+input[type=number],input[type=text],input[type=date],input[type=password],select{
+  padding:7px 10px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;background:#fff;color:var(--text);}
+input:focus,select:focus{outline:none;border-color:var(--accent);}
+
+/* ── SALARY CALCULATOR ──────────────────────────────────────────────── */
+.sal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.sal-input-card{background:#fff;border-radius:10px;border:1px solid var(--border);padding:16px;}
+.sal-input-card h3{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;}
+.field{margin-bottom:10px;}
+.field label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+.field input,.field select{width:100%;}
+.field .hint{font-size:11px;color:var(--muted);margin-top:3px;}
+
+.result-box{background:var(--accent);border-radius:10px;padding:18px;color:#fff;text-align:center;margin-bottom:16px;}
+.result-box .rl{font-size:12px;opacity:.8;margin-bottom:4px;}
+.result-box .rv{font-size:30px;font-weight:700;}
+.result-box .rf{font-size:12px;opacity:.7;margin-top:6px;}
+
+.deduct-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.deduct-card{border-radius:10px;padding:14px;}
+.deduct-card.tss{background:var(--tss-l);border:1px solid #B3E5FC;}
+.deduct-card.isr{background:var(--isr-l);border:1px solid #CE93D8;}
+.deduct-card h4{font-size:12px;font-weight:700;margin-bottom:8px;}
+.deduct-card h4.tss-h{color:var(--tss);}
+.deduct-card h4.isr-h{color:var(--isr);}
+.dc-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px solid rgba(0,0,0,.06);}
+.dc-row:last-child{border-bottom:none;font-weight:700;padding-top:5px;}
+.dc-val{font-weight:600;}
+
+.formula-box{background:#f8f9fa;border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);border:1px solid var(--border);margin-bottom:14px;}
+.formula-box span{font-weight:700;color:var(--text);}
+
+.emp-card{background:#fff;border-radius:10px;border:1px solid var(--border);padding:14px;margin-bottom:14px;}
+.emp-card h4{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted);}
+.emp-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid #f0f0f0;}
+.emp-row:last-child{border-bottom:none;font-weight:700;}
+
+.apply-banner{display:flex;align-items:center;justify-content:space-between;background:var(--green-l);border:1px solid #A5D6A7;border-radius:10px;padding:12px 16px;margin-bottom:14px;}
+.apply-banner .ab-text{font-size:13px;color:var(--green);}
+.apply-banner .ab-val{font-size:17px;font-weight:700;color:var(--green);}
+
+/* ── BUDGET ──────────────────────────────────────────────────────────── */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px;}
+.tab{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:11px;cursor:pointer;transition:all .12s;}
+.tab:hover{border-color:var(--accent);color:var(--accent);}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;}
+
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.metric{background:#fff;border-radius:10px;padding:12px 14px;border:1px solid var(--border);}
+.metric-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.metric-value{font-size:20px;font-weight:700;}
+.green{color:var(--green);}.red{color:var(--danger);}.blue{color:var(--accent);}.yellow{color:var(--yellow);}
+
+.pbar{height:9px;background:#e0e0e0;border-radius:5px;overflow:hidden;margin-bottom:14px;}
+.pfill{height:100%;border-radius:5px;transition:width .4s;}
+
+.income-editor{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 16px;margin-bottom:12px;}
+.income-editor label{font-size:12px;color:var(--muted);white-space:nowrap;}
+.income-editor input{width:140px;}
+.income-editor .ie-val{font-size:16px;font-weight:700;color:var(--accent);}
+.income-editor .ie-note{font-size:11px;color:var(--muted);}
+
+table{width:100%;border-collapse:collapse;}
+th{padding:7px 11px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);background:#fafafa;border-bottom:1px solid var(--border);}
+td{padding:7px 11px;font-size:13px;border-bottom:1px solid #f5f5f5;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.amt{text-align:right;font-weight:700;}
+.charge{color:var(--danger);}.rev{color:var(--green);}
+.rm{text-align:center;cursor:pointer;opacity:.3;font-size:15px;width:26px;}
+.rm:hover{opacity:.9;color:var(--danger);}
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:13px;}
+
+.addrow{display:flex;gap:7px;padding:9px 11px;background:#fafafa;border-top:1px solid var(--border);flex-wrap:wrap;}
+.addrow input,.addrow select{padding:6px 9px;}
+.addrow .mer{flex:1;min-width:130px;}
+.addrow .amt-inp{width:95px;}
+
+.syn{background:#fff;border-radius:10px;border:1px solid var(--border);padding:14px;margin-bottom:12px;}
+.syn-row{display:flex;gap:7px;margin-bottom:8px;}
+.syn-row input{flex:1;font-family:monospace;}
+.syn-btns{display:flex;gap:7px;flex-wrap:wrap;}
+.log{margin-top:8px;padding:7px 11px;background:#f5f5f5;border-radius:6px;font-size:12px;color:var(--muted);font-family:monospace;display:none;}
+.log.err{background:var(--danger-l);color:var(--danger);}
+.log.ok{background:var(--green-l);color:var(--green);}
+
+@media(max-width:650px){
+  .sal-grid,.deduct-grid,.metrics{grid-template-columns:1fr 1fr;}
+  .metrics{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:400px){.sal-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-brand">
+    <div>💰 Presupuesto Personal</div>
+    <div class="sub">República Dominicana · 2026</div>
+  </div>
+  <button class="ntab active" onclick="showPage('calc')">Calculadora Salarial</button>
+  <button class="ntab" onclick="showPage('budget')">Dashboard Presupuesto</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- PAGE 1: CALCULADORA SALARIAL                                       -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div class="main">
+<div id="pg-calc" class="page active">
+
+  <div class="sal-grid">
+    <!-- Input Card -->
+    <div class="sal-input-card">
+      <h3>Datos del salario</h3>
+
+      <div class="field">
+        <label>Modalidad</label>
+        <select id="modal" onchange="calcSalary()">
+          <option value="quincenal">Quincenal</option>
+          <option value="mensual">Mensual</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Salario bruto</label>
+        <input type="number" id="bruto" value="22500" min="0" step="100" oninput="calcSalary()" />
+        <div class="hint">Ingresa el monto antes de descuentos</div>
+      </div>
+
+      <div class="field">
+        <label>Dependientes adicionales (SFS)</label>
+        <input type="number" id="deps" value="0" min="0" max="10" oninput="calcSalary()" />
+        <div class="hint">Cónyuge/hijos adicionales (1% c/u)</div>
+      </div>
+
+      <div class="field">
+        <label>Categoría Riesgo Laboral (empresa)</label>
+        <select id="rl" onchange="calcSalary()">
+          <option value="1.10">Categoría 1 — 1.10%</option>
+          <option value="2.15">Categoría 2 — 2.15%</option>
+          <option value="3.20">Categoría 3 — 3.20%</option>
+          <option value="4.40">Categoría 4 — 4.40%</option>
+        </select>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:10px 0;">
+      <div class="field">
+        <label>Otros descuentos adicionales (RD$)</label>
+        <input type="number" id="otros" value="0" min="0" step="50" oninput="calcSalary()" />
+        <div class="hint">Préstamos, seguros adicionales, etc.</div>
+      </div>
+    </div>
+
+    <!-- Right: Resumen rápido -->
+    <div>
+      <div class="result-box">
+        <div class="rl">Salario Neto <span id="modal-lbl">Quincenal</span></div>
+        <div class="rv" id="r-neto">RD$0.00</div>
+        <div class="rf" id="r-formula">Neto = Bruto - TSS - ISR - Otros</div>
+      </div>
+
+      <div class="formula-box">
+        Salario Neto = <span id="f-bruto">RD$0</span> − <span id="f-tss">RD$0</span> (TSS) − <span id="f-isr">RD$0</span> (ISR) − <span id="f-otros">RD$0</span> (Otros) = <span id="f-neto">RD$0</span>
+      </div>
+
+      <div class="apply-banner">
+        <div>
+          <div class="ab-text">Salario neto disponible para presupuesto</div>
+          <div style="font-size:11px;color:var(--green);margin-top:2px;" id="apply-period">Quincenal</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="ab-val" id="apply-val">RD$0.00</div>
+          <button class="btn btn-grn btn-sm" onclick="applyTobudget()">Usar en presupuesto →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Descuentos detallados -->
+  <div class="deduct-grid">
+    <div class="deduct-card tss">
+      <h4 class="tss-h">Descuentos TSS (Empleado)</h4>
+      <div class="dc-row"><span>Plan Pensión (2.87%)</span><span class="dc-val" id="d-pension">RD$0.00</span></div>
+      <div class="dc-row"><span>Plan Salud (3.04%)</span><span class="dc-val" id="d-salud">RD$0.00</span></div>
+      <div class="dc-row"><span id="d-dep-lbl">Dependientes (0%)</span><span class="dc-val" id="d-deps">RD$0.00</span></div>
+      <div class="dc-row"><span>Ingresos cotizables TSS</span><span class="dc-val" id="d-cotiz">RD$0.00</span></div>
+      <div class="dc-row"><span>Total TSS empleado</span><span class="dc-val" id="d-tss-total">RD$0.00</span></div>
+      <div class="dc-row"><span>% TSS</span><span class="dc-val" id="d-tss-pct">0.00%</span></div>
+    </div>
+    <div class="deduct-card isr">
+      <h4 class="isr-h">Descuento ISR (Impuesto)</h4>
+      <div class="dc-row"><span>Ingresos cotizables ISR</span><span class="dc-val" id="i-cotiz">RD$0.00</span></div>
+      <div class="dc-row"><span>Salario neto imponible</span><span class="dc-val" id="i-imponible">RD$0.00</span></div>
+      <div class="dc-row"><span>ISR anual aplicado</span><span class="dc-val" id="i-anual">RD$0.00</span></div>
+      <div class="dc-row"><span>Total ISR <span id="i-period-lbl">quincenal</span></span><span class="dc-val" id="i-isr-total">RD$0.00</span></div>
+      <div class="dc-row"><span>% ISR</span><span class="dc-val" id="i-isr-pct">0.00%</span></div>
+    </div>
+  </div>
+
+  <!-- Aportes empresa -->
+  <div class="emp-card">
+    <h4>Aportes de la Empresa (TSS · Referencia)</h4>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+      <div>
+        <div class="dc-row"><span style="font-size:11px;">Plan Pensión (7.10%)</span><span class="dc-val" id="e-pension">RD$0.00</span></div>
+        <div class="dc-row"><span style="font-size:11px;">Plan Salud (7.09%)</span><span class="dc-val" id="e-salud">RD$0.00</span></div>
+      </div>
+      <div>
+        <div class="dc-row"><span style="font-size:11px;">Riesgo Laboral</span><span class="dc-val" id="e-rl">RD$0.00</span></div>
+        <div class="dc-row"><span style="font-size:11px;">Total empresa</span><span class="dc-val" id="e-total">RD$0.00</span></div>
+      </div>
+      <div>
+        <div class="dc-row"><span style="font-size:11px;">Total empleado</span><span class="dc-val" id="e-emp">RD$0.00</span></div>
+        <div class="dc-row" style="font-weight:700"><span style="font-size:11px;">Total TSS combinado</span><span class="dc-val" id="e-combined">RD$0.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla resumen -->
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">Desglose completo de descuentos</div></div>
+    <table>
+      <thead><tr><th>Concepto</th><th>Porcentaje</th><th style="text-align:right">Monto (RD$)</th></tr></thead>
+      <tbody id="resumen-tabla"></tbody>
+    </table>
+  </div>
+
+</div><!-- end pg-calc -->
+
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- PAGE 2: DASHBOARD PRESUPUESTO                                      -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<div id="pg-budget" class="page">
+
+  <!-- Income editor -->
+  <div class="income-editor">
+    <label>💵 Ingreso quincena:</label>
+    <input type="number" id="inc-input" min="0" step="100" value="20600" oninput="updateIncome()" />
+    <div>
+      <div class="ie-val" id="inc-display">RD$20,600.00</div>
+      <div class="ie-note" id="inc-source">Editado manualmente</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <span style="font-size:11px;color:var(--muted);">¿Calculado en la pestaña anterior?</span>
+      <button class="btn btn-sm" onclick="showPage('calc')">Ir a calculadora →</button>
+    </div>
+  </div>
+
+  <!-- Quincena tabs -->
+  <div class="tabs" id="tabs"></div>
+
+  <!-- Cloud save panel — GitHub Gist auto-save -->
+  <div class="syn" id="neo-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div style="font-weight:700;font-size:13px;">☁️ Auto-guardado en la nube</div>
+      <div id="neo-status" style="font-size:11px;color:var(--muted);">No configurado</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+      Los datos se guardan automáticamente en <strong>GitHub Gist</strong> cada vez que agregas un gasto. Acceso desde cualquier equipo sin hacer nada.<br><br>
+      <strong>Configuración (una sola vez, 2 minutos):</strong><br>
+      1. Ve a <a href="https://github.com/settings/tokens/new?scopes=gist&description=Presupuesto+App" target="_blank" style="color:var(--accent)">github.com → Settings → Developer settings → Personal Access Tokens → Tokens (classic)</a><br>
+      2. Crea un token con solo el permiso <code>gist</code> marcado → cópialo<br>
+      3. Pégalo abajo → presiona <strong>Conectar</strong>
+    </div>
+    <div class="syn-row">
+      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+      <button class="btn btn-acc" onclick="connectGist()">Conectar</button>
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:4px;margin-bottom:8px;">
+      Gist ID: <span id="gist-id-display" style="font-family:monospace;color:var(--accent);">—</span>
+      <span id="last-saved" style="margin-left:12px;"></span>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+      <button class="btn" onclick="loadFromGist()" id="btn-gist-load">⬇ Cargar desde nube</button>
+      <button class="btn btn-grn" onclick="exportExcel()">📥 Exportar Excel</button>
+      <button class="btn" onclick="clearQ()">🗑 Limpiar quincena</button>
+    </div>
+    <div id="neo-log" class="log"></div>
+  </div>
+
+  <!-- Gmail sync panel -->
+  <div class="syn">
+    <div style="font-weight:700;margin-bottom:6px;font-size:13px;">↻ Sincronizar consumos desde Gmail</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Ingresa tu API Key de Anthropic para importar consumos automáticamente de Qik y Banco Popular. Obtén la clave en <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a></div>
+    <div class="syn-row"><input type="password" id="akey" placeholder="sk-ant-api03-..." /><button class="btn btn-acc" onclick="saveKey()">Guardar</button></div>
+    <div class="syn-btns">
+      <button class="btn btn-qik" onclick="syncGmail()">↻ Sincronizar Gmail</button>
+    </div>
+    <div id="log" class="log"></div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric"><div class="metric-label">Ingreso quincena</div><div class="metric-value blue" id="m1">RD$0</div></div>
+    <div class="metric"><div class="metric-label">Total consumido</div><div class="metric-value" id="m2">RD$0</div></div>
+    <div class="metric"><div class="metric-label">Saldo restante</div><div class="metric-value" id="m3">RD$0</div></div>
+    <div class="metric"><div class="metric-label">% Utilizado</div><div class="metric-value" id="m4">0%</div></div>
+  </div>
+  <div class="pbar"><div class="pfill" id="pf" style="width:0%"></div></div>
+
+  <!-- INGRESOS EXTRA -->
+  <div class="card" style="border-left:4px solid var(--green);">
+    <div class="card-hdr">
+      <div class="card-title">
+        <span class="badge bgrn">+</span>
+        Ingresos Extra esta quincena
+        <span style="font-size:11px;font-weight:400;color:var(--muted);">Bonos, doble sueldo, horas extra, freelance…</span>
+      </div>
+      <div style="font-weight:700;color:var(--green);" id="ext-total">RD$0.00</div>
+    </div>
+    <table>
+      <thead><tr><th>Fecha</th><th>Descripción</th><th>Tipo</th><th style="text-align:right">Monto</th><th></th></tr></thead>
+      <tbody id="extb"></tbody>
+    </table>
+    <div class="addrow">
+      <input class="mer" id="extm" placeholder="Ej: Doble sueldo diciembre, Bono anual…" />
+      <input class="amt-inp" id="exta" placeholder="Monto" type="number" min="0" step="0.01" />
+      <input id="extd" type="date" />
+      <select id="extcat">
+        <option value="Doble Sueldo">🎄 Doble Sueldo</option>
+        <option value="Bono Anual">🎁 Bono Anual</option>
+        <option value="Horas Extra">⏰ Horas Extra</option>
+        <option value="Comisión">💼 Comisión</option>
+        <option value="Freelance">💻 Freelance</option>
+        <option value="Préstamo Recibido">🏦 Préstamo Recibido</option>
+        <option value="Regalo / Transferencia">🎀 Regalo / Transferencia</option>
+        <option value="Otro Ingreso">📌 Otro Ingreso</option>
+      </select>
+      <button class="btn btn-grn" onclick="addExtra()">+ Agregar</button>
+    </div>
+  </div>
+
+  <!-- QIK -->
+  <div class="card" style="border-left:4px solid var(--qik);">
+    <div class="card-hdr">
+      <div class="card-title"><span class="badge bqik">QIK</span> Transacciones Qik</div>
+      <div style="font-weight:700;color:var(--qik);" id="qt">RD$0.00</div>
+    </div>
+    <table><thead><tr><th>Fecha</th><th>Comercio</th><th>Tipo</th><th style="text-align:right">Monto</th><th></th></tr></thead>
+    <tbody id="qb"></tbody></table>
+    <div class="addrow">
+      <input class="mer" id="qm" placeholder="Comercio / descripción" />
+      <input class="amt-inp" id="qa" placeholder="Monto" type="number" min="0" step="0.01" />
+      <input id="qd" type="date" />
+      <select id="qtype"><option value="charge">Consumo</option><option value="reversal">Reversión</option></select>
+      <button class="btn btn-qik" onclick="addTx('Qik')">+ Agregar</button>
+    </div>
+  </div>
+
+  <!-- POPULAR -->
+  <div class="card" style="border-left:4px solid var(--pop);">
+    <div class="card-hdr">
+      <div class="card-title"><span class="badge bpop">POPULAR</span> Transacciones Banco Popular</div>
+      <div style="font-weight:700;color:var(--pop);" id="pt">RD$0.00</div>
+    </div>
+    <table><thead><tr><th>Fecha</th><th>Comercio</th><th>Tipo</th><th style="text-align:right">Monto</th><th></th></tr></thead>
+    <tbody id="pb"></tbody></table>
+    <div class="addrow">
+      <input class="mer" id="pm" placeholder="Comercio / descripción" />
+      <input class="amt-inp" id="pa" placeholder="Monto" type="number" min="0" step="0.01" />
+      <input id="pd" type="date" />
+      <select id="ptype"><option value="charge">Consumo</option><option value="reversal">Reversión</option></select>
+      <button class="btn btn-acc" onclick="addTx('Popular')">+ Agregar</button>
+    </div>
+  </div>
+
+  <!-- OTROS GASTOS -->
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-title">
+        <span class="badge" style="background:var(--otros-l);color:var(--otros);">OTROS</span>
+        Otros Gastos
+        <span style="font-size:11px;font-weight:400;color:var(--muted);">Alquiler, préstamos, servicios, gasolina…</span>
+      </div>
+      <div style="font-weight:700;color:var(--otros);" id="ot">RD$0.00</div>
+    </div>
+    <table>
+      <thead><tr><th>Fecha</th><th>Descripción</th><th>Categoría</th><th style="text-align:right">Monto</th><th></th></tr></thead>
+      <tbody id="ob"></tbody>
+    </table>
+    <div class="addrow">
+      <input class="mer" id="om" placeholder="Descripción del gasto" />
+      <input class="amt-inp" id="oa" placeholder="Monto" type="number" min="0" step="0.01" />
+      <input id="od" type="date" />
+      <select id="ocat">
+        <option value="Alquiler">🏠 Alquiler</option>
+        <option value="Préstamos">💳 Préstamos</option>
+        <option value="Gasolina">⛽ Gasolina</option>
+        <option value="Electricidad">💡 Electricidad</option>
+        <option value="Internet">📶 Internet</option>
+        <option value="Agua">💧 Agua</option>
+        <option value="Teléfono">📱 Teléfono</option>
+        <option value="Seguro">🛡 Seguro</option>
+        <option value="Comida">🛒 Comida</option>
+        <option value="Transporte">🚗 Transporte</option>
+        <option value="Educación">📚 Educación</option>
+        <option value="Salud">🩺 Salud</option>
+        <option value="Entretenimiento">🎮 Entretenimiento</option>
+        <option value="Otros">📌 Otros</option>
+      </select>
+      <button class="btn botros" onclick="addOtro()">+ Agregar</button>
+    </div>
+  </div>
+
+  <!-- RESUMEN POR CATEGORÍA -->
+  <div class="card" id="cat-summary-card" style="display:none;">
+    <div class="card-hdr"><div class="card-title">Resumen por categoría — Otros Gastos</div></div>
+    <div id="cat-summary" style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;"></div>
+  </div>
+
+</div><!-- end pg-budget -->
+</div><!-- end main -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+// SALARY CALCULATOR — República Dominicana
+// TSS: AFP 2.87% + SFS 3.04% empleado; 7.10% + 7.09% + RL empresa
+// ISR: tramos anuales vigentes 2024-2025
+// Salario máximo cotizable TSS: RD$74,808.00 mensual (20 SBN × ~3,740)
+// ══════════════════════════════════════════════════════════════════════
+const TSS_TOPE_MENSUAL = 74808;
+const AFP_EMP  = 0.0287, AFP_EMP_E = 0.0710;
+const SFS_EMP  = 0.0304, SFS_EMP_E = 0.0709;
+const DEP_PCT  = 0.01;   // por dependiente adicional SFS
+
+// ISR tramos anuales (RD$) — aplicables a la renta neta imponible anualizada
+const ISR_TRAMOS = [
+  {desde:0,         hasta:416220.00, tasa:0,    exceso:0,        base:0},
+  {desde:416220.01, hasta:624329.00, tasa:0.15, exceso:416220.01, base:0},
+  {desde:624329.01, hasta:867123.00, tasa:0.20, exceso:624329.01, base:31216.20},
+  {desde:867123.01, hasta:Infinity,  tasa:0.25, exceso:867123.01, base:79776.60},
+];
+
+function calcISR(renta_neta_imponible_anual){
+  for(const t of ISR_TRAMOS){
+    if(renta_neta_imponible_anual <= t.hasta){
+      return t.base + (renta_neta_imponible_anual - t.exceso) * t.tasa;
+    }
+  }
+  return 0;
+}
+
+let lastNetoQuincenal = 0;
+
+function calcSalary(){
+  const modal  = document.getElementById('modal').value;
+  const bruto  = parseFloat(document.getElementById('bruto').value)||0;
+  const deps   = parseInt(document.getElementById('deps').value)||0;
+  const rl_pct = parseFloat(document.getElementById('rl').value)/100;
+  const otros  = parseFloat(document.getElementById('otros').value)||0;
+
+  // Convert to mensual for TSS tope check
+  const bruto_mensual = modal==='quincenal' ? bruto*2 : bruto;
+  const cotiz_tss_mensual = Math.min(bruto_mensual, TSS_TOPE_MENSUAL);
+  const cotiz_tss = modal==='quincenal' ? cotiz_tss_mensual/2 : cotiz_tss_mensual;
+
+  // TSS empleado
+  const pension = cotiz_tss * AFP_EMP;
+  const salud   = cotiz_tss * SFS_EMP;
+  const dep_amt = cotiz_tss * DEP_PCT * deps;
+  const tss_total = pension + salud + dep_amt;
+  const tss_pct = cotiz_tss > 0 ? (tss_total/cotiz_tss)*100 : 0;
+
+  // ISR — base = salario - TSS, anualized
+  const imponible = bruto - tss_total;
+  const imponible_anual = modal==='quincenal' ? imponible*24 : imponible*12;
+  const isr_anual = calcISR(imponible_anual);
+  const isr_period = modal==='quincenal' ? isr_anual/24 : isr_anual/12;
+  const isr_pct = imponible > 0 ? (isr_period/imponible)*100 : 0;
+
+  // Net
+  const neto = bruto - tss_total - isr_period - otros;
+  lastNetoQuincenal = modal==='quincenal' ? neto : neto/2;
+
+  // Empresa
+  const e_pension = cotiz_tss * AFP_EMP_E;
+  const e_salud   = cotiz_tss * SFS_EMP_E;
+  const e_rl      = cotiz_tss * rl_pct;
+  const e_total   = e_pension + e_salud + e_rl;
+  const combined  = e_total + tss_total;
+
+  const ml = modal==='quincenal' ? 'Quincenal' : 'Mensual';
+  const pl = modal==='quincenal' ? 'quincenal' : 'mensual';
+
+  // Update UI
+  document.getElementById('modal-lbl').textContent = ml;
+  document.getElementById('r-neto').textContent = fmt(neto);
+  document.getElementById('apply-period').textContent = ml;
+  document.getElementById('apply-val').textContent = fmt(neto);
+
+  document.getElementById('f-bruto').textContent    = fmt(bruto);
+  document.getElementById('f-tss').textContent      = fmt(tss_total);
+  document.getElementById('f-isr').textContent      = fmt(isr_period);
+  document.getElementById('f-otros').textContent    = fmt(otros);
+  document.getElementById('f-neto').textContent     = fmt(neto);
+
+  // TSS
+  document.getElementById('d-pension').textContent  = fmt(pension);
+  document.getElementById('d-salud').textContent    = fmt(salud);
+  document.getElementById('d-dep-lbl').textContent  = `Dependientes (${deps}%)`;
+  document.getElementById('d-deps').textContent     = fmt(dep_amt);
+  document.getElementById('d-cotiz').textContent    = fmt(cotiz_tss);
+  document.getElementById('d-tss-total').textContent= fmt(tss_total);
+  document.getElementById('d-tss-pct').textContent  = tss_pct.toFixed(1)+'%';
+
+  // ISR
+  document.getElementById('i-cotiz').textContent    = fmt(bruto);
+  document.getElementById('i-imponible').textContent= fmt(imponible);
+  document.getElementById('i-anual').textContent    = fmt(isr_anual);
+  document.getElementById('i-period-lbl').textContent=pl;
+  document.getElementById('i-isr-total').textContent= fmt(isr_period);
+  document.getElementById('i-isr-pct').textContent  = isr_pct.toFixed(1)+'%';
+
+  // Empresa
+  document.getElementById('e-pension').textContent  = fmt(e_pension);
+  document.getElementById('e-salud').textContent    = fmt(e_salud);
+  document.getElementById('e-rl').textContent       = fmt(e_rl);
+  document.getElementById('e-total').textContent    = fmt(e_total);
+  document.getElementById('e-emp').textContent      = fmt(tss_total);
+  document.getElementById('e-combined').textContent = fmt(combined);
+
+  // Resumen tabla
+  const tbody = document.getElementById('resumen-tabla');
+  const rows = [
+    ['Salario Bruto', '—', bruto, 'font-weight:600'],
+    ['Pensión AFP (empleado)', '2.87%', -pension, ''],
+    ['Salud SFS (empleado)', '3.04%', -salud, ''],
+    deps>0?['Dependientes SFS', deps+'%', -dep_amt, '']:null,
+    otros>0?['Otros descuentos', '—', -otros, '']:null,
+    ['ISR', isr_pct.toFixed(1)+'%', -isr_period, ''],
+    ['Salario Neto', '—', neto, 'font-weight:700;color:var(--green)'],
+  ].filter(Boolean);
+  tbody.innerHTML = rows.map(r=>`<tr>
+    <td style="${r[3]}">${r[0]}</td>
+    <td style="color:var(--muted)">${r[1]}</td>
+    <td class="amt" style="${r[3]};color:${r[2]<0?'var(--danger)':r[2]===bruto?'var(--accent)':'var(--green)'}">${r[2]<0?'-':''}${fmt(Math.abs(r[2]))}</td>
+  </tr>`).join('');
+}
+
+function applyTobudget(){
+  const neto = parseFloat(document.getElementById('apply-val').textContent.replace(/[^0-9.]/g,''))||0;
+  const modal = document.getElementById('modal').value;
+  const inc = modal==='quincenal' ? neto : neto/2;
+  document.getElementById('inc-input').value = inc.toFixed(2);
+  document.getElementById('inc-source').textContent = 'Calculado desde la calculadora salarial';
+  updateIncome();
+  showPage('budget');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// BUDGET DASHBOARD
+// ══════════════════════════════════════════════════════════════════════
+const QS=['30 Diciembre (2025)','15 Enero','30 Enero','15 Febrero','30 Febrero','15 Marzo','30 Marzo','15 Abril','30 Abril','15 Mayo','30 Mayo','15 Junio','30 Junio','15 Julio','30 Julio','15 Agosto','30 Agosto','15 Septiembre','30 Septiembre','15 Octubre','30 Octubre','15 Noviembre','30 Noviembre','15 Diciembre','30 Diciembre'];
+const SK='rr_presup_2026b';
+const NEO_FILE='Presupuesto/datos_presupuesto.json';
+let aq='', bdata={}, income=20600;
+
+function loadBudget(){
+  try{const s=localStorage.getItem(SK);if(s){const p=JSON.parse(s);bdata=p.data||{};income=p.income||20600;}}catch(e){}
+  const now=new Date(),m=now.getMonth(),d=now.getDate();
+  const mn=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  aq=(d<=15?'15':'30')+' '+mn[m];
+  if(!QS.includes(aq))aq=QS[1];
+  document.getElementById('inc-input').value=income.toFixed(2);
+  // restore token hint and gist id
+  try{
+    const t=localStorage.getItem('rr_ghtoken');
+    if(t) document.getElementById('gh-token').placeholder='(token guardado)';
+    updateGistDisplay();
+  }catch(e){}
+}
+
+function saveBudget(){
+  try{ localStorage.setItem(SK,JSON.stringify({data:bdata,income})); }catch(e){}
+  scheduleGistSave();
+}
+
+// ── GITHUB GIST AUTO-SAVE ─────────────────────────────────────────────
+const GIST_FILENAME = 'presupuesto_rd_2026.json';
+let gistSaveTimer = null;
+
+function getGHToken(){ try{ const v=document.getElementById('gh-token').value.trim(); return v||localStorage.getItem('rr_ghtoken')||''; }catch(e){return '';} }
+function getGistId(){ try{ return localStorage.getItem('rr_gistid')||''; }catch(e){return '';} }
+
+function setStatus(msg, cls){
+  const el=document.getElementById('neo-status');
+  el.textContent=msg;
+  el.style.color=cls==='ok'?'var(--green)':cls==='warn'?'var(--yellow)':cls==='err'?'var(--danger)':'var(--muted)';
+}
+function showNeoLog(msg,cls=''){
+  const el=document.getElementById('neo-log');
+  el.style.display='block'; el.className='log '+(cls||''); el.textContent=msg;
+}
+function updateGistDisplay(){
+  const id=getGistId();
+  document.getElementById('gist-id-display').textContent=id||'—';
+}
+
+async function connectGist(){
+  const token=document.getElementById('gh-token').value.trim();
+  if(!token){showNeoLog('Pega tu token de GitHub primero.','err');return;}
+
+  // Detect if running on Neocities (CSP may block external APIs)
+  const onNeocities=location.hostname.includes('neocities.org');
+  if(onNeocities){
+    showNeoLog('⚠ Nota: Neocities bloquea llamadas a APIs externas (CSP). Si ves "Failed to fetch", descarga el HTML y ábrelo directamente desde tu computadora (doble clic) — ahí sí funciona el auto-guardado.','warn');
+  }
+
+  try{ localStorage.setItem('rr_ghtoken',token); }catch(e){}
+  document.getElementById('gh-token').placeholder='(token guardado)';
+  setStatus('Verificando token...','');
+
+  // First verify the token works
+  let userRes;
+  try{
+    const testR=await fetch('https://api.github.com/user',{
+      headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json'}
+    });
+    userRes=await testR.json();
+    if(!testR.ok) throw new Error('Token inválido: '+( userRes.message||'verifica que sea un token clásico con permiso gist'));
+  }catch(e){
+    if(e.message.includes('fetch')){
+      showNeoLog('❌ Error de red — probablemente CSP de Neocities bloquea la llamada.\n\nSolución: Descarga el HTML → ábrelo localmente haciendo doble clic en el archivo → configura el token desde ahí. El auto-guardado funcionará perfectamente.','err');
+    } else {
+      showNeoLog('❌ '+e.message+'\n\nAsegúrate de usar un token CLÁSICO (no fine-grained) con el permiso "gist" marcado.','err');
+    }
+    setStatus('Error','err');
+    return;
+  }
+
+  const existingId=getGistId();
+  if(existingId){
+    showNeoLog('Conectado como '+userRes.login+'. Gist ya configurado ('+existingId+'). Cargando datos...','ok');
+    updateGistDisplay();
+    setStatus('Conectado como '+userRes.login,'ok');
+    await loadFromGist();
+    return;
+  }
+
+  // Create new gist
+  try{
+    const r=await fetch('https://api.github.com/gists',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json','Accept':'application/vnd.github+json'},
+      body:JSON.stringify({
+        description:'Presupuesto Personal RD 2026',
+        public:false,
+        files:{[GIST_FILENAME]:{content:JSON.stringify({data:bdata,income,savedAt:new Date().toISOString(),version:2},null,2)}}
+      })
+    });
+    const res=await r.json();
+    if(r.ok && res.id){
+      try{ localStorage.setItem('rr_gistid',res.id); }catch(e){}
+      updateGistDisplay();
+      setStatus('Conectado como '+userRes.login+' — auto-guardado activo','ok');
+      showNeoLog('✅ Conectado como '+userRes.login+'. Gist creado (privado). Los datos se guardan automáticamente cada vez que agregas algo.','ok');
+    } else {
+      showNeoLog('❌ Error al crear Gist: '+(res.message||JSON.stringify(res))+'\n\nVerifica que el token tenga el permiso "gist" marcado.','err');
+      setStatus('Error','err');
+    }
+  }catch(e){ showNeoLog('❌ Error de red: '+e.message,'err'); setStatus('Error','err'); }
+}
+
+async function saveToGist(){
+  const token=getGHToken(), id=getGistId();
+  if(!token||!id) return; // silently skip if not configured
+  setStatus('Guardando...','warn');
+  try{
+    const r=await fetch(`https://api.github.com/gists/${id}`,{
+      method:'PATCH',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json','Accept':'application/vnd.github+json'},
+      body:JSON.stringify({files:{[GIST_FILENAME]:{content:JSON.stringify({data:bdata,income,savedAt:new Date().toISOString(),version:2},null,2)}}})
+    });
+    if(r.ok){
+      const now=new Date();
+      const timeStr=now.toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'});
+      setStatus('Guardado automáticamente · '+timeStr,'ok');
+      document.getElementById('last-saved').textContent='Último guardado: '+timeStr;
+    } else {
+      const res=await r.json();
+      setStatus('Error al guardar','err');
+      console.warn('Gist save error:',res.message);
+    }
+  }catch(e){ setStatus('Sin conexión — guardado local','warn'); }
+}
+
+async function loadFromGist(){
+  const token=getGHToken(), id=getGistId();
+  if(!token||!id){ showNeoLog('Configura tu token de GitHub primero.','err'); return; }
+  const btn=document.getElementById('btn-gist-load');
+  if(btn){ btn.disabled=true; btn.textContent='Cargando...'; }
+  setStatus('Cargando desde nube...','');
+  try{
+    const r=await fetch(`https://api.github.com/gists/${id}`,{
+      headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json'}
+    });
+    const res=await r.json();
+    if(r.ok && res.files && res.files[GIST_FILENAME]){
+      const raw=res.files[GIST_FILENAME].content;
+      const p=JSON.parse(raw);
+      bdata=p.data||{}; income=p.income||20600;
+      try{ localStorage.setItem(SK,JSON.stringify({data:bdata,income})); }catch(e){}
+      document.getElementById('inc-input').value=income.toFixed(2);
+      document.getElementById('inc-display').textContent=fmt(income);
+      renderTabs(); renderBudget();
+      const d=p.savedAt?new Date(p.savedAt).toLocaleString('es-DO'):'—';
+      setStatus('Sincronizado · '+d,'ok');
+      document.getElementById('last-saved').textContent='Último guardado: '+d;
+      showNeoLog('✅ Datos cargados desde la nube. Fecha: '+d,'ok');
+    } else {
+      showNeoLog('❌ Error: '+(res.message||'No se encontraron datos.'),'err');
+      setStatus('Error al cargar','err');
+    }
+  }catch(e){ showNeoLog('❌ '+e.message,'err'); setStatus('Error','err'); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent='⬇ Cargar desde nube'; } }
+}
+
+// Debounced auto-save: waits 1.5s after last change, then saves
+function scheduleGistSave(){
+  clearTimeout(gistSaveTimer);
+  setStatus('Cambios pendientes...','warn');
+  gistSaveTimer=setTimeout(saveToGist, 1500);
+}
+
+function txs(){return bdata[aq]||[];}
+function setTxs(t){bdata[aq]=t;saveBudget();}
+
+function updateIncome(){
+  income=parseFloat(document.getElementById('inc-input').value)||0;
+  document.getElementById('inc-display').textContent=fmt(income);
+  saveBudget();
+  renderBudget();
+}
+
+function fmt(n){return'RD$'+Math.abs(n).toLocaleString('es-DO',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderBudget(){
+  const t=txs();
+  const qt=t.filter(x=>x.bank==='Qik'), pt=t.filter(x=>x.bank==='Popular');
+  const ot=t.filter(x=>x.bank==='Otros'), ext=t.filter(x=>x.bank==='Extra');
+  const qn=qt.reduce((s,x)=>s+(x.type==='charge'?x.amount:-x.amount),0);
+  const pn=pt.reduce((s,x)=>s+(x.type==='charge'?x.amount:-x.amount),0);
+  const on_=ot.reduce((s,x)=>s+x.amount,0);
+  const extn=ext.reduce((s,x)=>s+x.amount,0);
+  const totalIncome=income+extn;
+  const tn=qn+pn+on_, rem=totalIncome-tn, pct=totalIncome>0?Math.min(100,(tn/totalIncome)*100):0;
+
+  document.getElementById('m1').textContent=fmt(totalIncome);
+  document.getElementById('m2').textContent=fmt(tn);
+  document.getElementById('m3').textContent=fmt(rem);
+  document.getElementById('m3').className='metric-value '+(rem<0?'red':'green');
+  document.getElementById('m4').textContent=pct.toFixed(1)+'%';
+  document.getElementById('m4').className='metric-value '+(pct>90?'red':pct>70?'yellow':'green');
+  document.getElementById('qt').textContent=fmt(qn);
+  document.getElementById('pt').textContent=fmt(pn);
+  document.getElementById('ot').textContent=fmt(on_);
+  document.getElementById('ext-total').textContent='+'+fmt(extn);
+
+  const pf=document.getElementById('pf');
+  pf.style.width=pct+'%';
+  pf.style.background=pct>90?'var(--danger)':pct>70?'var(--yellow)':'var(--green)';
+
+  renderTb('qb',qt); renderTb('pb',pt); renderOtros('ob',ot); renderExtra('extb',ext);
+  renderCatSummary(ot);
+}
+
+function renderTb(id,rows){
+  const tb=document.getElementById(id);
+  if(!rows.length){tb.innerHTML='<tr><td colspan="5" class="empty">No hay transacciones en esta quincena</td></tr>';return;}
+  tb.innerHTML=rows.map(t=>`<tr>
+    <td>${t.date||'—'}</td><td>${esc(t.merchant)}</td>
+    <td style="font-size:11px;color:${t.type==='reversal'?'var(--green)':'var(--muted)'}">${t.type==='reversal'?'↩ Reversión':'Consumo'}</td>
+    <td class="amt ${t.type==='reversal'?'rev':'charge'}">${t.type==='reversal'?'+':'-'}${fmt(t.amount)}</td>
+    <td class="rm" onclick="rmTx('${t.id}')">×</td>
+  </tr>`).join('');
+}
+
+function renderOtros(id,rows){
+  const tb=document.getElementById(id);
+  if(!rows.length){tb.innerHTML='<tr><td colspan="5" class="empty">No hay otros gastos en esta quincena</td></tr>';return;}
+  tb.innerHTML=rows.map(t=>`<tr>
+    <td>${t.date||'—'}</td>
+    <td>${esc(t.merchant)}</td>
+    <td><span class="cat-pill cat-${esc(t.cat||'Otros')}">${esc(t.cat||'Otros')}</span></td>
+    <td class="amt charge">-${fmt(t.amount)}</td>
+    <td class="rm" onclick="rmTx('${t.id}')">×</td>
+  </tr>`).join('');
+}
+
+function renderCatSummary(rows){
+  const card=document.getElementById('cat-summary-card');
+  const box=document.getElementById('cat-summary');
+  if(!rows.length){card.style.display='none';return;}
+  card.style.display='block';
+  const totals={};
+  rows.forEach(r=>{const c=r.cat||'Otros';totals[c]=(totals[c]||0)+r.amount;});
+  box.innerHTML=Object.entries(totals).sort((a,b)=>b[1]-a[1]).map(([cat,amt])=>`
+    <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 14px;min-width:130px;">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">${cat}</div>
+      <div style="font-weight:700;font-size:14px;color:var(--otros);">${fmt(amt)}</div>
+    </div>`).join('');
+}
+
+function renderExtra(id,rows){
+  const tb=document.getElementById(id);
+  if(!rows.length){tb.innerHTML='<tr><td colspan="5" class="empty">No hay ingresos extra en esta quincena</td></tr>';return;}
+  tb.innerHTML=rows.map(t=>`<tr>
+    <td>${t.date||'—'}</td>
+    <td>${esc(t.merchant)}</td>
+    <td><span class="cat-pill" style="background:var(--green-l);color:var(--green);">${esc(t.cat||'Otro Ingreso')}</span></td>
+    <td class="amt rev">+${fmt(t.amount)}</td>
+    <td class="rm" onclick="rmTx('${t.id}')">×</td>
+  </tr>`).join('');
+}
+
+function addExtra(){
+  const merchant=document.getElementById('extm').value.trim();
+  const amount=parseFloat(document.getElementById('exta').value);
+  const date=document.getElementById('extd').value;
+  const cat=document.getElementById('extcat').value;
+  if(!merchant||!amount)return;
+  setTxs([...txs(),{id:Date.now()+'_'+Math.random().toString(36).slice(2),bank:'Extra',merchant,amount,date,cat,type:'income'}]);
+  document.getElementById('extm').value=''; document.getElementById('exta').value='';
+  renderBudget();
+}
+
+function addOtro(){
+  const merchant=document.getElementById('om').value.trim();
+  const amount=parseFloat(document.getElementById('oa').value);
+  const date=document.getElementById('od').value;
+  const cat=document.getElementById('ocat').value;
+  if(!merchant||!amount)return;
+  setTxs([...txs(),{id:Date.now()+'_'+Math.random().toString(36).slice(2),bank:'Otros',merchant,amount,date,cat,type:'charge'}]);
+  document.getElementById('om').value=''; document.getElementById('oa').value='';
+  renderBudget();
+}
+
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=QS.map(q=>`<button class="tab ${q===aq?'active':''}" onclick="setQ('${q}')">${q}</button>`).join('');
+}
+function setQ(q){aq=q;renderTabs();renderBudget();}
+
+function addTx(bank){
+  const p=bank==='Qik'?'q':'p';
+  const merchant=document.getElementById(p+'m').value.trim();
+  const amount=parseFloat(document.getElementById(p+'a').value);
+  const date=document.getElementById(p+'d').value;
+  const type=document.getElementById(p+'type').value;
+  if(!merchant||!amount)return;
+  setTxs([...txs(),{id:Date.now()+'_'+Math.random().toString(36).slice(2),bank,merchant,amount,date,type}]);
+  document.getElementById(p+'m').value=''; document.getElementById(p+'a').value='';
+  renderBudget();
+}
+function rmTx(id){setTxs(txs().filter(t=>t.id!==id));renderBudget();}
+function clearQ(){if(!confirm('¿Limpiar transacciones de '+aq+'?'))return;setTxs([]);renderBudget();}
+
+function saveKey(){
+  const k=document.getElementById('akey').value.trim();
+  if(!k)return;
+  try{localStorage.setItem('rr_akey',k);}catch(e){}
+  showLog('Clave guardada.','ok');
+}
+function getKey(){
+  const v=document.getElementById('akey').value.trim();
+  if(v)return v;
+  try{return localStorage.getItem('rr_akey')||'';}catch(e){return'';}
+}
+function showLog(msg,cls=''){
+  const el=document.getElementById('log');
+  el.style.display='block'; el.className='log '+(cls||''); el.textContent=msg;
+}
+
+async function syncGmail(){
+  const key=getKey();
+  if(!key){showLog('Ingresa tu API Key primero.','err');return;}
+  showLog('Conectando con Gmail...');
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:2000,
+        system:'Extrae transacciones de correos de notificaciones@qik.do y notificaciones@popularenlinea.com. Responde SOLO JSON sin texto adicional: {"transactions":[{"merchant":"...","amount":0.00,"date":"YYYY-MM-DD","bank":"Qik|Popular","type":"charge|reversal","emailId":"..."}],"lastId":"..."}',
+        messages:[{role:'user',content:'Busca correos de consumo de Qik y Banco Popular de los ultimos 30 dias.'}],
+        mcp_servers:[{type:'url',url:'https://gmail.mcp.claude.com/mcp',name:'gmail'}]
+      })
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'HTTP '+r.status);}
+    const d=await r.json();
+    let raw='';
+    for(const b of d.content){if(b.type==='text')raw+=b.text;else if(b.type==='mcp_tool_result')raw=b.content?.[0]?.text||raw;}
+    const m=raw.replace(/```json|```/g,'').match(/\{[\s\S]*\}/);
+    if(!m)throw new Error('Respuesta inesperada');
+    const parsed=JSON.parse(m[0]);
+    const newTxs=parsed.transactions||[];
+    if(!newTxs.length){showLog('No hay transacciones nuevas.');return;}
+    const cur=txs();
+    const existing=new Set(cur.map(t=>t.emailId).filter(Boolean));
+    let added=0;
+    for(const tx of newTxs){
+      if(tx.emailId&&existing.has(tx.emailId))continue;
+      cur.push({id:Date.now()+'_'+Math.random().toString(36).slice(2),...tx});added++;
+    }
+    setTxs(cur);renderBudget();
+    showLog(added+' transaccion(es) importada(s) desde Gmail.','ok');
+  }catch(e){showLog('Error: '+e.message,'err');}
+}
+
+function exportExcel(){
+  const wb=XLSX.utils.book_new();
+  QS.forEach(q=>{
+    const t=bdata[q]||[];
+    const qt=t.filter(x=>x.bank==='Qik'),pt=t.filter(x=>x.bank==='Popular');
+    const ot=t.filter(x=>x.bank==='Otros'),ext=t.filter(x=>x.bank==='Extra');
+    const qn=qt.reduce((s,x)=>s+(x.type==='charge'?x.amount:-x.amount),0);
+    const pn=pt.reduce((s,x)=>s+(x.type==='charge'?x.amount:-x.amount),0);
+    const on_=ot.reduce((s,x)=>s+x.amount,0);
+    const extn=ext.reduce((s,x)=>s+x.amount,0);
+    const tn=qn+pn+on_, totalInc=income+extn;
+    const rows=[
+      ['PRESUPUESTO — '+q],[],
+      ['Ingreso Base Quincena',income],
+      ['Ingresos Extra',extn],
+      ['Total Ingresos',totalInc],
+      ['Total Gastos',tn],
+      ['Saldo Restante',totalInc-tn],
+      ['% Utilizado',totalInc>0?((tn/totalInc)*100).toFixed(1)+'%':'0%'],[],
+      ['INGRESOS EXTRA'],['Fecha','Descripción','Tipo','Monto'],
+      ...ext.map(t=>[t.date,t.merchant,t.cat||'Ingreso',t.amount]),
+      ['','','TOTAL EXTRA',extn],[],
+      ['CONSUMOS QIK'],['Fecha','Comercio','Tipo','Monto'],
+      ...qt.map(t=>[t.date,t.merchant,t.type==='reversal'?'Reversion':'Consumo',t.type==='reversal'?-t.amount:t.amount]),
+      ['','','TOTAL QIK',qn],[],
+      ['CONSUMOS POPULAR'],['Fecha','Comercio','Tipo','Monto'],
+      ...pt.map(t=>[t.date,t.merchant,t.type==='reversal'?'Reversion':'Consumo',t.type==='reversal'?-t.amount:t.amount]),
+      ['','','TOTAL POPULAR',pn],[],
+      ['OTROS GASTOS'],['Fecha','Descripción','Categoría','Monto'],
+      ...ot.map(t=>[t.date,t.merchant,t.cat||'Otros',t.amount]),
+      ['','','TOTAL OTROS',on_],
+    ];
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:14},{wch:36},{wch:18},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,ws,q.substring(0,31));
+  });
+  XLSX.writeFile(wb,'Presupuesto_2026_Actualizado.xlsx');
+  showLog('Excel exportado.','ok');
+}
+
+// ── NAV ──────────────────────────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  document.querySelectorAll('.ntab')[id==='calc'?0:1].classList.add('active');
+  if(id==='budget'){renderTabs();renderBudget();}
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+calcSalary();
+loadBudget();
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('qd').value = today;
+document.getElementById('pd').value = today;
+document.getElementById('od').value = today;
+document.getElementById('extd').value = today;
+document.getElementById('inc-display').textContent = fmt(income);
+try{const k=localStorage.getItem('rr_akey');if(k)document.getElementById('akey').placeholder='(clave guardada)';}catch(e){}
+renderTabs();
+renderBudget();
+// Auto-load from Gist on startup if configured
+if(getGHToken() && getGistId()){
+  loadFromGist();
+} else if(getGHToken()){
+  setStatus('Token guardado — presiona Conectar','warn');
+} else {
+  setStatus('No configurado — configura GitHub para auto-guardado','');
+}
+
+</script>
+</body>
+</html>
