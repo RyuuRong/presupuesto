@@ -330,41 +330,53 @@ tr:hover td{background:#fafafa;}
   <!-- Cloud save panel — GitHub Gist auto-save -->
   <div class="syn" id="neo-panel">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-      <div style="font-weight:700;font-size:13px;">☁️ Auto-guardado en la nube</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-weight:700;font-size:13px;">☁️ Auto-guardado en la nube</div>
+        <button onclick="toggleCloudPanel()" id="btn-toggle-cloud" style="font-size:11px;padding:2px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;">Ocultar ▲</button>
+      </div>
       <div id="neo-status" style="font-size:11px;color:var(--muted);">No configurado</div>
     </div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
-      Los datos se guardan automáticamente en <strong>GitHub Gist</strong> cada vez que agregas un gasto. Acceso desde cualquier equipo sin hacer nada.<br><br>
-      <strong>Configuración (una sola vez, 2 minutos):</strong><br>
-      1. Ve a <a href="https://github.com/settings/tokens/new?scopes=gist&description=Presupuesto+App" target="_blank" style="color:var(--accent)">github.com → Settings → Developer settings → Personal Access Tokens → Tokens (classic)</a><br>
-      2. Crea un token con solo el permiso <code>gist</code> marcado → cópialo<br>
-      3. Pégalo abajo → presiona <strong>Conectar</strong>
+    <div id="cloud-body">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">
+        Los datos se guardan automáticamente en <strong>GitHub Gist</strong> cada vez que agregas un gasto. Acceso desde cualquier equipo sin hacer nada.<br><br>
+        <strong>Configuración (una sola vez, 2 minutos):</strong><br>
+        1. Ve a <a href="https://github.com/settings/tokens/new?scopes=gist&description=Presupuesto+App" target="_blank" style="color:var(--accent)">github.com → Settings → Developer settings → Personal Access Tokens → Tokens (classic)</a><br>
+        2. Crea un token con solo el permiso <code>gist</code> marcado → cópialo<br>
+        3. Pégalo abajo → presiona <strong>Conectar</strong>
+      </div>
+      <div class="syn-row">
+        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+        <button class="btn btn-acc" onclick="connectGist()">Conectar</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;margin-bottom:8px;">
+        Gist ID: <span id="gist-id-display" style="font-family:monospace;color:var(--accent);">—</span>
+        <span id="last-saved" style="margin-left:12px;"></span>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <button class="btn" onclick="loadFromGist()" id="btn-gist-load">⬇ Cargar desde nube</button>
+        <button class="btn btn-grn" onclick="exportExcel()">📥 Exportar Excel</button>
+        <button class="btn" onclick="clearQ()">🗑 Limpiar quincena</button>
+      </div>
+      <div id="neo-log" class="log"></div>
     </div>
-    <div class="syn-row">
-      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
-      <button class="btn btn-acc" onclick="connectGist()">Conectar</button>
-    </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:4px;margin-bottom:8px;">
-      Gist ID: <span id="gist-id-display" style="font-family:monospace;color:var(--accent);">—</span>
-      <span id="last-saved" style="margin-left:12px;"></span>
-    </div>
-    <div style="display:flex;gap:7px;flex-wrap:wrap;">
-      <button class="btn" onclick="loadFromGist()" id="btn-gist-load">⬇ Cargar desde nube</button>
-      <button class="btn btn-grn" onclick="exportExcel()">📥 Exportar Excel</button>
-      <button class="btn" onclick="clearQ()">🗑 Limpiar quincena</button>
-    </div>
-    <div id="neo-log" class="log"></div>
   </div>
 
   <!-- Gmail sync panel -->
   <div class="syn">
-    <div style="font-weight:700;margin-bottom:6px;font-size:13px;">↻ Sincronizar consumos desde Gmail</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Ingresa tu API Key de Anthropic para importar consumos automáticamente de Qik y Banco Popular. Obtén la clave en <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a></div>
-    <div class="syn-row"><input type="password" id="akey" placeholder="sk-ant-api03-..." /><button class="btn btn-acc" onclick="saveKey()">Guardar</button></div>
-    <div class="syn-btns">
-      <button class="btn btn-qik" onclick="syncGmail()">↻ Sincronizar Gmail</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-weight:700;font-size:13px;">↻ Sincronizar consumos desde Gmail</div>
+        <button onclick="toggleGmailPanel()" id="btn-toggle-gmail" style="font-size:11px;padding:2px 10px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;">Ocultar ▲</button>
+      </div>
     </div>
-    <div id="log" class="log"></div>
+    <div id="gmail-body">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Ingresa tu API Key de Anthropic para importar consumos automáticamente de Qik y Banco Popular. Obtén la clave en <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a></div>
+      <div class="syn-row"><input type="password" id="akey" placeholder="sk-ant-api03-..." /><button class="btn btn-acc" onclick="saveKey()">Guardar</button></div>
+      <div class="syn-btns">
+        <button class="btn btn-qik" onclick="syncGmail()">↻ Sincronizar Gmail</button>
+      </div>
+      <div id="log" class="log"></div>
+    </div>
   </div>
 
   <!-- Metrics -->
@@ -669,6 +681,41 @@ function showNeoLog(msg,cls=''){
   const el=document.getElementById('neo-log');
   el.style.display='block'; el.className='log '+(cls||''); el.textContent=msg;
 }
+function toggleGmailPanel(){
+  const body=document.getElementById('gmail-body');
+  const btn=document.getElementById('btn-toggle-gmail');
+  const hidden=body.style.display==='none';
+  body.style.display=hidden?'block':'none';
+  btn.textContent=hidden?'Ocultar ▲':'Mostrar ▼';
+  try{localStorage.setItem('rr_gmail_collapsed',hidden?'0':'1');}catch(e){}
+}
+
+function toggleCloudPanel(){
+  const body=document.getElementById('cloud-body');
+  const btn=document.getElementById('btn-toggle-cloud');
+  const hidden=body.style.display==='none';
+  body.style.display=hidden?'block':'none';
+  btn.textContent=hidden?'Ocultar ▲':'Mostrar ▼';
+  try{localStorage.setItem('rr_cloud_collapsed',hidden?'0':'1');}catch(e){}
+}
+
+function initCloudPanel(){
+  try{
+    const collapsed=localStorage.getItem('rr_cloud_collapsed');
+    const configured=getGHToken()&&getGistId();
+    if(collapsed==='1'||(configured&&collapsed!=='0')){
+      document.getElementById('cloud-body').style.display='none';
+      document.getElementById('btn-toggle-cloud').textContent='Mostrar ▼';
+    }
+  }catch(e){}
+  try{
+    if(localStorage.getItem('rr_gmail_collapsed')==='1'){
+      document.getElementById('gmail-body').style.display='none';
+      document.getElementById('btn-toggle-gmail').textContent='Mostrar ▼';
+    }
+  }catch(e){}
+}
+
 function updateGistDisplay(){
   const id=getGistId();
   document.getElementById('gist-id-display').textContent=id||'—';
@@ -1046,6 +1093,7 @@ document.getElementById('inc-display').textContent = fmt(income);
 try{const k=localStorage.getItem('rr_akey');if(k)document.getElementById('akey').placeholder='(clave guardada)';}catch(e){}
 renderTabs();
 renderBudget();
+initCloudPanel();
 // Auto-load from Gist on startup if configured
 if(getGHToken() && getGistId()){
   loadFromGist();
